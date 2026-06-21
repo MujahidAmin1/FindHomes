@@ -1,6 +1,9 @@
+import 'package:find_homes/core/locator.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await setupServiceLocator();
   runApp(const MyApp());
 }
 
