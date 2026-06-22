@@ -20,12 +20,12 @@ class AuthNotifier extends AsyncNotifier<UserModel?> {
 
   AuthService get _authService => serviceLocator.get<AuthService>();
 
-  Future<void> register(String username, String email, String password) async {
+  Future<void> register(String email, String password, String role) async {
     AppLogger.d('POST /auth/register — $email', tag: _tag);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(
       () => _authService
-          .register(username, email, password)
+          .register(email, password, role)
           .then((u) => u as UserModel?),
     );
   }
