@@ -1,4 +1,9 @@
+import 'package:another_flushbar/flushbar.dart';
+import 'package:find_homes/core/utils/backend_error.dart';
+import 'package:find_homes/core/widgets/app_button.dart';
 import 'package:find_homes/features/auth/model/user.dart';
+import 'package:find_homes/features/property/view/my_listings.dart';
+import 'package:find_homes/features/property/view/property_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:find_homes/core/theme/app_colors.dart';
@@ -17,7 +22,7 @@ class AuthScreen extends ConsumerStatefulWidget {
 
 class _AuthScreenState extends ConsumerState<AuthScreen> {
   bool isSignup = false;
-  String selectedRole = UserRole.client.name;
+  UserRole selectedRole = UserRole.client;
   late TextEditingController emailController;
   late TextEditingController passwordController;
 
@@ -37,29 +42,62 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
   void _submit() {
     if (isSignup) {
-      ref.read(authNotifierProvider.notifier).register(
-        emailController.text,
-        passwordController.text,
-        selectedRole,
-      );
+      ref
+          .read(authNotifierProvider.notifier)
+          .register(
+            emailController.text,
+            passwordController.text,
+            selectedRole,
+          );
     } else {
-      ref.read(authNotifierProvider.notifier).login(
-        emailController.text,
-        passwordController.text,
-      );
+      ref
+          .read(authNotifierProvider.notifier)
+          .login(emailController.text, passwordController.text);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authNotifierProvider);
+    ref.listen(authNotifierProvider, (previous, next) {
+      final wasSubmitting = previous?.isLoading ?? false;
+      if (!wasSubmitting || next.isLoading) return;
+
+      if (next.hasError) {
+        _showFlushbar(
+          message: BackendError.extractMessage(next.error!),
+          isError: true,
+        );
+        return;
+      }
+
+      if (next.hasValue && next.value != null) {
+        _showFlushbar(
+          message: isSignup
+              ? 'Account created successfully.'
+              : 'Signed in successfully.',
+        );
+        next.value?.role == UserRole.client
+            ? Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const PropertyListings()),
+                (_) => false,
+              )
+            : Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const AgentListings()),
+                (_) => false,
+              );
+      }
+    });
 
     return Scaffold(
       backgroundColor: AppColors.surface,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 32.0,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -73,7 +111,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(Icons.home_work, color: AppColors.card, size: 28),
+                      child: const Icon(
+                        Icons.home_work,
+                        color: AppColors.card,
+                        size: 28,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Text(
@@ -92,11 +134,13 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  isSignup ? 'Join us and find your dream home' : 'Sign in to continue',
+                  isSignup
+                      ? 'Join us and find your dream home'
+                      : 'Sign in to continue',
                   style: AppTypography.body.copyWith(color: AppColors.muted),
                 ),
                 const SizedBox(height: 32),
-                
+
                 // Form Card
                 Container(
                   padding: const EdgeInsets.all(24),
@@ -143,7 +187,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                 style: TextButton.styleFrom(
                                   padding: EdgeInsets.zero,
                                   minimumSize: Size.zero,
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
                                 ),
                                 child: Text(
                                   'Forgot password?',
@@ -159,38 +204,36 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                       SizedBox(
                         width: double.infinity,
                         height: 52,
-                        child: ElevatedButton(
-                          onPressed: authState.isLoading ? null : _submit,
+                        child: AppButton(
+                          loading: authState.isLoading,
+                          onPressed: _submit,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: authState.isLoading
-                              ? const SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(color: AppColors.card, strokeWidth: 2),
-                                )
-                              : Text(
-                                  isSignup ? 'Sign up' : 'Sign in',
-                                  style: AppTypography.buttonLabel,
-                                ),
+                          label: isSignup ? 'Sign up' : 'Sign in',
                         ),
                       ),
                       const SizedBox(height: 24),
                       Row(
                         children: [
-                          const Expanded(child: Divider(color: AppColors.divider)),
+                          const Expanded(
+                            child: Divider(color: AppColors.divider),
+                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Text(
                               'OR',
-                              style: AppTypography.caption.copyWith(color: AppColors.muted),
+                              style: AppTypography.caption.copyWith(
+                                color: AppColors.muted,
+                              ),
                             ),
                           ),
-                          const Expanded(child: Divider(color: AppColors.divider)),
+                          const Expanded(
+                            child: Divider(color: AppColors.divider),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 24),
@@ -211,8 +254,12 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      isSignup ? 'Already have an account? ' : "Don't have an account? ",
-                      style: AppTypography.bodyMedium.copyWith(color: AppColors.muted),
+                      isSignup
+                          ? 'Already have an account? '
+                          : "Don't have an account? ",
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: AppColors.muted,
+                      ),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -222,7 +269,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                       },
                       child: Text(
                         isSignup ? 'Sign in' : 'Sign up',
-                        style: AppTypography.bodyMedium.copyWith(color: AppColors.primary),
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: AppColors.primary,
+                        ),
                       ),
                     ),
                   ],
@@ -233,5 +282,23 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         ),
       ),
     );
+  }
+
+  void _showFlushbar({required String message, bool isError = false}) {
+    Flushbar<void>(
+      messageText: Text(
+        message,
+        style: AppTypography.bodyMedium.copyWith(color: AppColors.card),
+      ),
+      icon: Icon(
+        isError ? Icons.error_outline : Icons.check_circle_outline,
+        color: AppColors.card,
+      ),
+      backgroundColor: isError ? AppColors.error : AppColors.success,
+      borderRadius: BorderRadius.circular(12),
+      margin: const EdgeInsets.all(16),
+      duration: const Duration(seconds: 3),
+      flushbarPosition: FlushbarPosition.TOP,
+    ).show(context);
   }
 }

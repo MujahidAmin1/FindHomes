@@ -3,8 +3,8 @@ import 'package:find_homes/features/auth/view/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PropertyListings extends ConsumerWidget {
-  const PropertyListings({super.key});
+class AgentListings extends ConsumerWidget {
+  const AgentListings({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,7 +20,7 @@ class PropertyListings extends ConsumerWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Center(child: Text("Welcome client"),),
+          Center(child: Text("Welcome Agent"),),
           FilledButton(
             onPressed: () =>  ref.read(authNotifierProvider.notifier).logout(), 
             child: Text("Logout"),

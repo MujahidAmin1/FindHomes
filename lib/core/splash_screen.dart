@@ -1,40 +1,65 @@
-import 'package:find_homes/core/utils/sizing_utils.dart';
+import 'package:find_homes/core/theme/app_colors.dart';
 import 'package:find_homes/features/auth/controller/auth_controller.dart';
+import 'package:find_homes/features/auth/model/user.dart';
 import 'package:find_homes/features/auth/view/auth_screen.dart';
+import 'package:find_homes/features/property/view/my_listings.dart';
 import 'package:find_homes/features/property/view/property_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SplashScreen extends ConsumerWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  @override
+  Widget build(BuildContext context) {
     ref.listen(authNotifierProvider, (prev, next) {
       if (next.isLoading) return;
-      final destination =
-          next.hasValue && next.value != null ? const PropertyListings() : const AuthScreen();
+
+      final destination = next.hasValue && next.value != null
+          ? (next.value!.role == UserRole.client
+              ? const PropertyListings()
+              : const AgentListings())
+          : const AuthScreen();
+
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => destination),
         (_) => false,
       );
     });
 
-    return SafeArea(
-      child: Center(
+    return Scaffold(
+      backgroundColor: AppColors.primary,
+      body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              "assets/app_icon",
-              scale: 1.0,
+            Icon(
+              Icons.home_work,
+              size: 80,
+              color: AppColors.card,
             ),
-            addHorizontalSpacing(10),
-            Text("FindHomes", style: TextTheme.of(context).displayLarge),
-            addHorizontalSpacing(10),
-            Text("FindHomes", style: TextTheme.of(context).displayMedium),
+            SizedBox(height: 24),
+            Text(
+              "FindHomes",
+              style: TextStyle(
+                color: AppColors.card,
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+              ),
+            ),
+            SizedBox(height: 48),
+            CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.card),
+            ),
           ],
         ),
-      )
-      );
+      ),
+    );
   }
 }

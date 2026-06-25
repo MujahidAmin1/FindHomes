@@ -27,6 +27,7 @@
 //   )
 // ============================================================
 
+import 'package:find_homes/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
 enum _AppButtonVariant { filled, outlined, ghost }
@@ -150,7 +151,7 @@ class AppButton extends StatelessWidget {
       children: [
         if (hasLeading) ...[leading!, const SizedBox(width: 4)],
         Flexible(
-          child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
+          child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppTypography.buttonLabel),
         ),
         if (hasTrailing) ...[const SizedBox(width: 8), trailing!],
       ],

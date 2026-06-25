@@ -133,10 +133,8 @@ class AuthInterceptor extends Interceptor {
 
       final response = await refreshDio.post(
         refreshEndpoint,
-        data: {'refreshToken': refreshToken},
+        data: {'refresh_token': refreshToken},
         options: Options(
-          headers: {'Authorization': 'Bearer $refreshToken'},
-          // Don't follow redirects during refresh
           followRedirects: false,
           validateStatus: (status) => status != null && status < 500,
         ),
@@ -146,8 +144,8 @@ class AuthInterceptor extends Interceptor {
         final data = response.data;
 
         // Handle different response formats
-        final newAccessToken = data['access'];
-        final newRefreshToken = data['refresh'];
+        final newAccessToken = data['access_token'];
+        final newRefreshToken = data['refresh_token'];
 
         if (newAccessToken == null || newRefreshToken == null) {
           throw Exception('No access token in refresh response');

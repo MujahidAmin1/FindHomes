@@ -1,55 +1,68 @@
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:find_homes/core/endpoints.dart';
 import 'package:find_homes/core/locator.dart';
 import 'package:find_homes/core/token_storage.dart';
 import 'package:find_homes/core/utils/app_logger.dart';
+import 'package:find_homes/core/utils/backend_error.dart';
 import 'package:find_homes/features/auth/model/user.dart';
 
-
-
 class AuthService {
- final _dio = serviceLocator.get<Dio>();
+  final _dio = serviceLocator.get<Dio>();
   static const _tag = "AuthService";
 
- Future<UserResponse> login({required String email, required String password}) async {
+  Future<UserModel> login({
+    required String email,
+    required String password,
+  }) async {
     try {
-      final response = await _dio.post(Endpoints.login, data: {
-        'email': email,
-        'password': password,
-      });
-      await serviceLocator.get<TokenStorageService>().saveTokens(
-        accessToken: response.data['accessToken'],
-        refreshToken: response.data['refreshToken'],
+      AppLogger.d('POST /auth/login $email', tag: _tag,);
+      final response = await _dio.post(
+        Endpoints.login,
+        data: {'email': email, 'password': password},
       );
-      final data = response.data['user'];
-      return UserResponse.fromJson(data);
+      final data = response.data as Map<String, dynamic>;
+      final payload = UserResponse.fromJson(data);
+      await serviceLocator.get<TokenStorageService>().saveTokens(
+        accessToken: payload.accessToken,
+        refreshToken: payload.refreshToken,
+      );
+      return payload.user;
     } on DioException catch (e) {
-      // Handle login error
-      throw Exception('Login failed: ${e.response?.data['message'] ?? e.message}');
+      throw BackendException.fromDioException(
+        e,
+        fallbackMessage: 'Login failed. Please try again.',
+      );
     }
   }
 
-  Future<UserResponse> register(String email, String password, String role) async {
+  Future<UserModel> register(String email, String password, UserRole role) async {
     try {
-      final response = await _dio.post(Endpoints.register, data: {
-        'role': role,
-        'email': email,
-        'password': password,
-      });
-      await serviceLocator.get<TokenStorageService>().saveTokens(
-        accessToken: response.data['accessToken'],
-        refreshToken: response.data['refreshToken'],
+      AppLogger.d('POST /auth/register  $email', tag: _tag,);
+      final response = await _dio.post(
+        Endpoints.register,
+        data: {'email': email, 'password': password, 'role': role.name},
       );
-      final data = response.data['user'];
-      return UserResponse.fromJson(data);
+      final data = response.data as Map<String, dynamic>;
+      final payload = UserResponse.fromJson(data);
+      await serviceLocator.get<TokenStorageService>().saveTokens(
+        accessToken: payload.accessToken,
+        refreshToken: payload.refreshToken,
+      );
+      return payload.user;
     } on DioException catch (e) {
-      // Handle registration error
-      throw Exception('Registration failed: ${e.response?.data['message'] ?? e.message}');
+      throw BackendException.fromDioException(
+        e,
+        fallbackMessage: 'Registration failed. Please try again.',
+      );
     }
   }
+
   Future<bool> refreshTokens() async {
-    final refreshToken = await serviceLocator.get<TokenStorageService>().getRefreshToken();
+    final refreshToken = await serviceLocator
+        .get<TokenStorageService>()
+        .getRefreshToken();
     try {
       final response = await _dio.post(
         Endpoints.refresh,
@@ -61,38 +74,44 @@ class AuthService {
         refreshToken: data.refreshToken,
       );
       return true;
-    } catch (e) {
-      throw Exception("Failed to refresh tokens: $e");
-    }
-  }
-  Future<void> logout()async{
-    try {
-      AppLogger.d('POST /auth/logout', tag: _tag);
-      await _dio.post(Endpoints.logout);
-      await serviceLocator.get<TokenStorageService>().clearTokens();
-    } 
-    on DioException catch (e) {
-      AppLogger.e(
-        'Failed to logout',
-        tag: _tag,
-        error: e,
+    } on DioException catch (e) {
+      throw BackendException.fromDioException(
+        e,
+        fallbackMessage: 'Failed to refresh tokens. Please sign in again.',
       );
     }
   }
+
+  Future<void> logout() async {
+    final refreshToken = await serviceLocator
+        .get<TokenStorageService>()
+        .getRefreshToken();
+    try {
+      AppLogger.d('POST /auth/logout', tag: _tag);
+      await _dio.post(
+        Endpoints.logout,
+        data: {"refresh_token": refreshToken}
+      );
+      await serviceLocator.get<TokenStorageService>().clearTokens();
+    } on DioException catch (e) {
+      AppLogger.e('Failed to logout', tag: _tag, error: e);
+    }
+  }
+
   Future<UserModel> getCurrentUser() async {
     try {
       AppLogger.d('GET /auth/me', tag: _tag);
       final response = await _dio.get(Endpoints.getCurrentUser);
-      final data = response.data;
-      return UserModel.fromJson(data['user']);
+      final data = response.data as Map<String, dynamic>;
+      return UserModel.fromJson(data);
     } on DioException catch (e) {
-      AppLogger.e(
-        'Failed to parse /auth/me response',
-        tag: _tag,
-        error: e,
+      AppLogger.e('Failed to parse /auth/me response', tag: _tag, error: e);
+      throw BackendException.fromDioException(
+        e,
+        fallbackMessage: 'Failed to fetch current user.',
       );
-      throw Exception('Failed to fetch current user: ${e.message} ${e.stackTrace}');
     }
   }
+
   
 }
