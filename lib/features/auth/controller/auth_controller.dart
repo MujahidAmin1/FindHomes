@@ -52,6 +52,13 @@ class AuthNotifier extends AsyncNotifier<UserModel?> {
     state = await _guardAuth(_authService.getCurrentUser);
   }
 
+  Future<void> updateOnboardingStatus(OnboardingStatus status) async {
+    state = const AsyncValue.loading();
+    state = await _guardAuth(
+      () => _authService.patchOnboardingStatus(status),
+    );
+  }
+
   Future<AsyncValue<UserModel?>> _guardAuth(
     Future<UserModel> Function() action,
   ) async {

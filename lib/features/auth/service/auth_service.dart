@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:find_homes/core/endpoints.dart';
 import 'package:find_homes/core/locator.dart';
@@ -109,6 +107,23 @@ class AuthService {
       throw BackendException.fromDioException(
         e,
         fallbackMessage: 'Failed to fetch current user.',
+      );
+    }
+  }
+
+  Future<UserModel> patchOnboardingStatus(OnboardingStatus status) async {
+    try {
+      AppLogger.d('PATCH /auth/onboarding-status → ${status.name}', tag: _tag);
+      final response = await _dio.patch(
+        Endpoints.onboardingStatus,
+        data: {'onboarding_status': status.name},
+      );
+      final data = response.data as Map<String, dynamic>;
+      return UserModel.fromJson(data);
+    } on DioException catch (e) {
+      throw BackendException.fromDioException(
+        e,
+        fallbackMessage: 'Failed to update onboarding status.',
       );
     }
   }

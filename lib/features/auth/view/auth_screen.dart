@@ -2,14 +2,15 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:find_homes/core/utils/backend_error.dart';
 import 'package:find_homes/core/widgets/app_button.dart';
 import 'package:find_homes/features/auth/model/user.dart';
-import 'package:find_homes/features/property/view/my_listings.dart';
-import 'package:find_homes/features/property/view/property_view.dart';
+import 'package:find_homes/features/navbar/agent_navbar.dart';
+import 'package:find_homes/features/navbar/client_navbar.dart';
+import 'package:find_homes/features/profile/view/user_profile_update.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:find_homes/core/theme/app_colors.dart';
 import 'package:find_homes/core/theme/app_typography.dart';
 import 'package:find_homes/features/auth/controller/auth_controller.dart';
-import 'package:find_homes/features/auth/widget/custom_text_field.dart';
+import 'package:find_homes/core/widgets/app_text_field.dart';
 import 'package:find_homes/features/auth/widget/social_button.dart';
 import 'package:find_homes/features/auth/widget/role_selection_card.dart';
 
@@ -72,20 +73,32 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
       }
 
       if (next.hasValue && next.value != null) {
+        final user = next.value!;
         _showFlushbar(
           message: isSignup
               ? 'Account created successfully.'
               : 'Signed in successfully.',
         );
-        next.value?.role == UserRole.client
-            ? Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const PropertyListings()),
-                (_) => false,
-              )
-            : Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const AgentListings()),
-                (_) => false,
-              );
+
+        final Widget destination;
+        if (isSignup) {
+          // Registration: always go to profile update first
+          destination = const UserProfileUpdate();
+        } else {
+          // Login: check onboarding status
+          if (user.onboardingStatus == OnboardingStatus.completed) {
+            destination = user.role == UserRole.client
+                ? const ClientNavbar()
+                : const AgentNavbar();
+          } else {
+            destination = const UserProfileUpdate();
+          }
+        }
+
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => destination),
+          (_) => false,
+        );
       }
     });
 
@@ -168,14 +181,14 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                         ),
                         const SizedBox(height: 20),
                       ],
-                      CustomTextField(
+                      AppTextField(
                         label: 'Email Address',
                         hintText: 'Enter your email',
                         prefixIcon: Icons.email_outlined,
                         controller: emailController,
                       ),
                       const SizedBox(height: 20),
-                      CustomTextField(
+                      AppTextField(
                         label: 'Password',
                         hintText: 'Enter your password',
                         prefixIcon: Icons.lock_outline,

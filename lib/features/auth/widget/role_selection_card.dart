@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:find_homes/core/theme/app_colors.dart';
 import 'package:find_homes/core/theme/app_typography.dart';
+import 'package:find_homes/features/auth/model/user.dart';
 
 class RoleSelectionCard extends StatelessWidget {
-  final String role; // 'client' or 'agent'
-  final ValueChanged<String> onChanged;
+  final UserRole role; // client or agent
+  final ValueChanged<UserRole> onChanged;
 
   const RoleSelectionCard({
     super.key,
@@ -24,16 +25,16 @@ class RoleSelectionCard extends StatelessWidget {
             Expanded(
               child: _RoleOption(
                 label: 'Find a Home',
-                isSelected: role == 'client',
-                onTap: () => onChanged('client'),
+                isSelected: role == UserRole.client,
+                onTap: () => onChanged(UserRole.client),
               ),
             ),
             const SizedBox(width: 16),
             Expanded(
               child: _RoleOption(
                 label: 'List a Property',
-                isSelected: role == 'agent',
-                onTap: () => onChanged('agent'),
+                isSelected: role == UserRole.agent,
+                onTap: () => onChanged(UserRole.agent),
               ),
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:find_homes/features/navbar/navbar_ctrl.dart';
+import 'package:find_homes/features/property/view/property_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,7 +10,7 @@ class ClientNavbar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var currentScreen = ref.watch(currentScreenProvider);
     List<Widget> screens = [
-    //  OngoingAnimeView(),
+     PropertyListings()
     //  UpcomingAnimeView(),
     //  SearchScreen()
     ];

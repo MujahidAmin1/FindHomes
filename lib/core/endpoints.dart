@@ -7,4 +7,8 @@ abstract class Endpoints {
   static const logout = "$baseUrl/auth/logout";
   static const getCurrentUser = "$baseUrl/auth/me";
   static const refresh = "$baseUrl/auth/refresh";
+
+  static const profile = "$baseUrl/profile";
+  static const agentProfile = "$baseUrl/profile/agent_profile";
+  static const onboardingStatus = "$baseUrl/auth/onboarding-status";
 }
