@@ -11,4 +11,10 @@ abstract class Endpoints {
   static const profile = "$baseUrl/profile";
   static const agentProfile = "$baseUrl/profile/agent_profile";
   static const onboardingStatus = "$baseUrl/auth/onboarding-status";
+
+
+  static const property = "$baseUrl/properties/";
+  static String getagentProperties(String agentId) => "$baseUrl/properties/agent/$agentId";
+  static String updateProperty(String propertyId) => "$baseUrl/properties/$propertyId";
+  static String deleteProperty(String propertyId) => "$baseUrl/properties/$propertyId";
 }

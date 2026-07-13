@@ -1,5 +1,5 @@
 import 'package:find_homes/features/navbar/navbar_ctrl.dart';
-import 'package:find_homes/features/property/view/my_listings.dart';
+import 'package:find_homes/features/agent%20dashboard/view/my_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -26,19 +26,19 @@ class AgentNavbar extends ConsumerWidget {
         },
         destinations: const [
            NavigationDestination(
-            selectedIcon: Icon(Icons.play_circle),
-            icon: Icon(Icons.play_circle_outline),
-            label: 'Ongoing',
+            selectedIcon: Icon(Icons.house_sharp),
+            icon: Icon(Icons.house),
+            label: 'My Listings',
           ),
            NavigationDestination(
             selectedIcon: Icon(Icons.calendar_month),
             icon: Icon(Icons.calendar_month_outlined),
-            label: 'Upcoming',
+            label: 'Inquiries',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.search),
-            icon: Icon(Icons.search_outlined),
-            label: 'Search',
+            selectedIcon: Icon(Icons.person),
+            icon: Icon(Icons.person_outlined),
+            label: 'Profile',
           ),
         ]
         ),

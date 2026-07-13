@@ -3,9 +3,11 @@ import 'package:find_homes/core/endpoints.dart';
 import 'package:find_homes/core/interceptors/auth_interceptor.dart';
 import 'package:find_homes/core/interceptors/logging_interceptor.dart';
 import 'package:find_homes/core/token_storage.dart';
+import 'package:find_homes/features/agent%20dashboard/service/dashboard_service.dart';
 import 'package:find_homes/features/auth/service/auth_service.dart';
 import 'package:find_homes/features/auth/view/auth_screen.dart';
 import 'package:find_homes/features/profile/service/profile_service.dart';
+import 'package:find_homes/features/property/service/property_service.dart';
 import 'package:find_homes/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -54,6 +56,7 @@ Future<void> setupServiceLocator() async {
     )
     ..registerLazySingleton<AuthService>(() => AuthService()
     )
-    ..registerLazySingleton<ProfileService>(() => ProfileService());
-
+    ..registerLazySingleton<ProfileService>(() => ProfileService())
+    ..registerLazySingleton<PropertyService>(() => PropertyService())
+    ..registerLazySingleton<AgentDashboardService>(() => AgentDashboardService());
 }
