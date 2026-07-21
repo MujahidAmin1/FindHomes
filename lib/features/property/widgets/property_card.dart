@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:find_homes/core/theme/app_colors.dart';
 import 'package:find_homes/core/theme/app_typography.dart';
-import 'package:find_homes/core/utils/formatters.dart';
+
+import 'package:find_homes/core/utils/property_extensions.dart';
 import 'package:find_homes/features/property/model/property.dart';
 import 'package:flutter/material.dart';
 
@@ -48,7 +49,7 @@ class PropertyCard extends StatelessWidget {
   // ── Image with badge overlay ──────────────────────────────────────────
 
   Widget _buildImage() {
-    final imageUrl = _primaryImageUrl;
+    final imageUrl = property.primaryImageUrl;
 
     return Stack(
       children: [
@@ -81,11 +82,11 @@ class PropertyCard extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: _listingBadgeColor,
+              color: property.listingType.badgeColor,
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
-              _listingBadgeLabel,
+              property.listingType.badgeLabel,
               style: AppTypography.caption.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
@@ -155,7 +156,7 @@ class PropertyCard extends StatelessWidget {
 
           // Price
           Text(
-            _formattedPrice,
+            property.formattedPrice,
             style: AppTypography.priceSmall.copyWith(
               color: AppColors.primary,
             ),
@@ -163,7 +164,7 @@ class PropertyCard extends StatelessWidget {
           const SizedBox(height: 10),
 
           // Specs row
-          if (_hasSpecs) _buildSpecsRow(),
+          if (property.hasSpecs) _buildSpecsRow(),
         ],
       ),
     );
@@ -199,41 +200,6 @@ class PropertyCard extends StatelessWidget {
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────
-
-  String get _primaryImageUrl {
-    if (property.images.isEmpty) return '';
-    final primary = property.images.where((img) => img.isPrimary).toList();
-    return primary.isNotEmpty
-        ? primary.first.imageUrl
-        : property.images.first.imageUrl;
-  }
-
-  bool get _hasSpecs =>
-      property.bedrooms != null ||
-      property.bathrooms != null ||
-      property.sizeSqm != null;
-
-  String get _formattedPrice {
-    final base = AppFormatters.formatCurrency(
-      property.price.toString(),
-      property.currency,
-    );
-    if (property.listingType == ListingType.rent) return '$base / yr';
-    if (property.listingType == ListingType.shortlet) return '$base / night';
-    return base;
-  }
-
-  Color get _listingBadgeColor => switch (property.listingType) {
-        ListingType.sale => AppColors.saleTag,
-        ListingType.rent => AppColors.rentTag,
-        ListingType.shortlet => AppColors.shortletTag,
-      };
-
-  String get _listingBadgeLabel => switch (property.listingType) {
-        ListingType.sale => 'FOR SALE',
-        ListingType.rent => 'FOR RENT',
-        ListingType.shortlet => 'SHORTLET',
-      };
 
   Widget get _imagePlaceholder => Container(
         color: AppColors.surface,

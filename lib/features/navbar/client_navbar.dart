@@ -1,4 +1,5 @@
 import 'package:find_homes/features/navbar/navbar_ctrl.dart';
+import 'package:find_homes/features/profile/view/user_profile_view.dart';
 import 'package:find_homes/features/property/view/property_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,9 +11,9 @@ class ClientNavbar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var currentScreen = ref.watch(currentScreenProvider);
     List<Widget> screens = [
-     PropertyListings()
+     PropertyListings(),
     //  UpcomingAnimeView(),
-    //  SearchScreen()
+    UserProfileView()
     ];
     return Scaffold(
       body: IndexedStack(
@@ -26,19 +27,24 @@ class ClientNavbar extends ConsumerWidget {
         },
         destinations: const [
            NavigationDestination(
-            selectedIcon: Icon(Icons.play_circle),
-            icon: Icon(Icons.play_circle_outline),
-            label: 'Ongoing',
+            selectedIcon: Icon(Icons.house_sharp),
+            icon: Icon(Icons.house),
+            label: 'Home',
           ),
            NavigationDestination(
-            selectedIcon: Icon(Icons.calendar_month),
-            icon: Icon(Icons.calendar_month_outlined),
-            label: 'Upcoming',
+            selectedIcon: Icon(Icons.search),
+            icon: Icon(Icons.search),
+            label: 'Search',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.search),
-            icon: Icon(Icons.search_outlined),
-            label: 'Search',
+            selectedIcon: Icon(Icons.bookmark),
+            icon: Icon(Icons.bookmark_border),
+            label: 'Saved',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.person),
+            icon: Icon(Icons.person_outlined),
+            label: 'Profile',
           ),
         ]
         ),

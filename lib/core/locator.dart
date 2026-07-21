@@ -7,6 +7,7 @@ import 'package:find_homes/features/agent%20dashboard/service/dashboard_service.
 import 'package:find_homes/features/auth/service/auth_service.dart';
 import 'package:find_homes/features/auth/view/auth_screen.dart';
 import 'package:find_homes/features/profile/service/profile_service.dart';
+import 'package:find_homes/features/chat/service/chat_service.dart';
 import 'package:find_homes/features/property/service/property_service.dart';
 import 'package:find_homes/main.dart';
 import 'package:flutter/material.dart';
@@ -58,5 +59,6 @@ Future<void> setupServiceLocator() async {
     )
     ..registerLazySingleton<ProfileService>(() => ProfileService())
     ..registerLazySingleton<PropertyService>(() => PropertyService())
-    ..registerLazySingleton<AgentDashboardService>(() => AgentDashboardService());
+    ..registerLazySingleton<AgentDashboardService>(() => AgentDashboardService())
+    ..registerLazySingleton<ChatService>(() => ChatService());
 }

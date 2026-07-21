@@ -17,4 +17,12 @@ abstract class Endpoints {
   static String getagentProperties(String agentId) => "$baseUrl/properties/agent/$agentId";
   static String updateProperty(String propertyId) => "$baseUrl/properties/$propertyId";
   static String deleteProperty(String propertyId) => "$baseUrl/properties/$propertyId";
+  static String getPropertybyId(String propertyId) => "$baseUrl/properties/$propertyId";
+
+  static String startConversation(String propertyId) => "$baseUrl/conversations/$propertyId";
+  static const getConversation = "$baseUrl/conversations";
+  static String messages(String conversationId) => "$baseUrl/conversations/$conversationId/messages";
+  static String markAsRead(String conversationId) => "$baseUrl/conversations/$conversationId/read";
+
+
 }

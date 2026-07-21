@@ -69,4 +69,22 @@ class PropertyService {
       );
     }
   }
+
+  /// Fetches a single property by its ID.
+  Future<PropertyModel> getPropertyById(String propertyId) async {
+    try {
+      AppLogger.d('GET /properties/$propertyId', tag: _tag);
+      final response = await _dio.get(
+        Endpoints.getPropertybyId(propertyId),
+      );
+
+      final data = response.data as Map<String, dynamic>;
+      return PropertyModel.fromJson(data);
+    } on DioException catch (e) {
+      throw BackendException.fromDioException(
+        e,
+        fallbackMessage: 'Failed to fetch property',
+      );
+    }
+  }
 }
