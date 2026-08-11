@@ -68,7 +68,7 @@ class ChatListScreen extends ConsumerWidget {
   }
 }
 
-/// Wraps a [ConversationTile] and fetches the property data for it.
+
 class _ConversationItem extends StatefulWidget {
   final Conversation conversation;
 
@@ -147,8 +147,6 @@ class _ConversationItemState extends State<_ConversationItem> {
     );
   }
 }
-
-// ── Empty & Error States ──────────────────────────────────────────────────────
 
 class _EmptyView extends StatelessWidget {
   const _EmptyView();
@@ -236,7 +234,7 @@ class _ErrorView extends StatelessWidget {
   }
 }
 
-// ── Shimmer placeholders ──────────────────────────────────────────────────────
+
 
 class _ShimmerCircle extends StatelessWidget {
   const _ShimmerCircle();

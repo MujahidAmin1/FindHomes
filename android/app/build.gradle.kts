@@ -42,3 +42,10 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // paystack_flutter_sdk 0.0.1-alpha.2 pins paystack-ui:0.0.8, which is compiled
+    // against a newer Jetpack Compose and crashes with NoSuchMethodError: AnimatedContent.
+    // Force the fixed 0.0.11 release (see PaystackOSS/paystack_flutter#15).
+    implementation("com.paystack.android:paystack-ui:0.0.11")
+}

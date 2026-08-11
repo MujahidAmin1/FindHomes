@@ -46,12 +46,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       if (mounted) setState(() => _currentUserId = user.id);
     } catch (_) {}
 
-    // Now fetch messages — userId is already set
     await ref
         .read(messagesNotifierProvider.notifier)
         .fetchMessages(widget.conversation.id);
-
-    // Mark as read (fire-and-forget)
     ref
         .read(messagesNotifierProvider.notifier)
         .markAsRead(widget.conversation.id);
@@ -169,7 +166,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 }
 
-// ── Message list with date separators & property tag ──────────────────────────
+
 
 class _MessageListView extends StatelessWidget {
   final List<Message> messages;

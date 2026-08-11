@@ -9,10 +9,6 @@ class PropertyService {
   final String _tag = "PropertyService";
   final Dio _dio = serviceLocator.get<Dio>();
 
-  /// Fetches a paginated list of properties with optional filters.
-  ///
-  /// Maps directly to the backend query params:
-  /// `page`, `limit`, `property_type`, `listing_type`, `min_price`, `max_price`.
   Future<List<PropertyModel>> getProperties({
     int page = 1,
     int limit = 20,
@@ -70,7 +66,6 @@ class PropertyService {
     }
   }
 
-  /// Fetches a single property by its ID.
   Future<PropertyModel> getPropertyById(String propertyId) async {
     try {
       AppLogger.d('GET /properties/$propertyId', tag: _tag);

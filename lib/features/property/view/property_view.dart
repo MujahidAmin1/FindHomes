@@ -102,6 +102,7 @@ class _PropertyListingsState extends ConsumerState<PropertyListings> {
       greeting = 'Good evening';
     }
 
+  
     // Try profile fullName → fallback to email local part
     String? displayName;
     if (profile.hasValue && profile.value?.fullName != null) {

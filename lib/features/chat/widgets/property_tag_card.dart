@@ -5,9 +5,7 @@ import 'package:find_homes/core/utils/formatters.dart';
 import 'package:find_homes/features/property/model/property.dart';
 import 'package:flutter/material.dart';
 
-/// Instagram story-reply style property context card.
-/// Attached above the first message to show which property the
-/// conversation is about.
+
 class PropertyTagCard extends StatelessWidget {
   final PropertyModel property;
   final VoidCallback? onTap;

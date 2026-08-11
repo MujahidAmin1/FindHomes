@@ -25,4 +25,6 @@ abstract class Endpoints {
   static String markAsRead(String conversationId) => "$baseUrl/conversations/$conversationId/read";
 
 
+  static const initializePayment = "$baseUrl/payments/initialize";
+  static String getPaymentStatus(String reference) => "$baseUrl/payments/$reference";
 }

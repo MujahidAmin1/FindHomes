@@ -1,6 +1,8 @@
+import 'package:find_homes/features/favourites/views/favourites_view.dart';
 import 'package:find_homes/features/navbar/navbar_ctrl.dart';
 import 'package:find_homes/features/profile/view/user_profile_view.dart';
 import 'package:find_homes/features/property/view/property_view.dart';
+import 'package:find_homes/features/search/views/search_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,9 +13,10 @@ class ClientNavbar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var currentScreen = ref.watch(currentScreenProvider);
     List<Widget> screens = [
-     PropertyListings(),
-    //  UpcomingAnimeView(),
-    UserProfileView()
+      PropertyListings(),
+      SearchView(),
+      FavouritesView(),
+      UserProfileView()
     ];
     return Scaffold(
       body: IndexedStack(

@@ -56,7 +56,6 @@ class ConversationTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Avatar ─────────────────────────────────────────────
             Container(
               width: 52,
               height: 52,
@@ -93,7 +92,6 @@ class ConversationTile extends StatelessWidget {
 
             const SizedBox(width: 14),
 
-            // ── Content ────────────────────────────────────────────
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
